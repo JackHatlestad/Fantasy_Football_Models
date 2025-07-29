@@ -9,11 +9,9 @@ weeks = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '1
 
 for week in weeks:
     df[week] = df[week].replace(['-', 'BYE'], np.nan)
-    df[week] = pd.to_numeric(df[week], errors='coerce')
+    df[week] = df[week].apply(pd.to_numeric, errors='coerce')
 
-numeric_cols = df[weeks]
-
-df['STD'] = df[numeric_cols].std(axis=1)
+df['STD'] = df[weeks].std(axis=1, skipna=True)
 df['ConsistencyRank'] = df['STD'].rank(ascending=True, method='min').astype(int)
 
 print(df[['Player', 'STD', 'ConsistencyRank']].head())
